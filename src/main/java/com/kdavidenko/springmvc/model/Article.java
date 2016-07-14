@@ -39,7 +39,7 @@ public class Article implements Serializable {
     @DateTimeFormat(pattern = "dd.MM.yyyy")
     @Column(name = "publication_date", nullable = false)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
-    private LocalDate publicationDate;
+    private LocalDate publicationDate = new LocalDate();
 
     @Size(min = 3, max = 45)
     @Column(name = "category", length = 45, nullable = false)

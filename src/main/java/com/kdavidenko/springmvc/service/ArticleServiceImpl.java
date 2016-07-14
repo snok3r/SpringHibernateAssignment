@@ -27,14 +27,13 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     public void saveArticle(Article article) {
-        getSession().persist(article);
+        getSession().save(article);
     }
 
     public void updateArticle(Article article) {
         Article entity = findById(article.getId());
         if (entity != null) {
             entity.setTitle(article.getTitle());
-            entity.setPublicationDate(article.getPublicationDate());
             entity.setContent(article.getContent());
             entity.setCategory(article.getCategory());
         }

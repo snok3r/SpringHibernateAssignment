@@ -32,12 +32,6 @@
         </tr>
 
         <tr>
-            <td><label for="publicationDate">Publication Date: </label></td>
-            <td><form:input path="publicationDate" id="publicationDate"/></td>
-            <td><form:errors path="publicationDate" cssClass="error"/></td>
-        </tr>
-
-        <tr>
             <td><label for="content">Content: </label></td>
             <td><form:input path="content" id="content"/></td>
             <td><form:errors path="content" cssClass="error"/></td>
