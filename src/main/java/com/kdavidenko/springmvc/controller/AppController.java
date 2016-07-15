@@ -61,8 +61,10 @@ public class AppController {
 
         service.saveArticle(article);
 
-        model.addAttribute("success", "Article '" + article.getTitle() + "' added successfully");
-        return "success";
+        List<Article> articles = service.findAllArticles();
+        model.addAttribute("articles", articles);
+        model.addAttribute("message", "Новость '" + article.getTitle() + "' успешно добавлена");
+        return "main";
     }
 
 
@@ -91,8 +93,10 @@ public class AppController {
 
         service.updateArticle(article);
 
-        model.addAttribute("success", "Article '" + article.getTitle() + "' updated successfully");
-        return "success";
+        List<Article> articles = service.findAllArticles();
+        model.addAttribute("articles", articles);
+        model.addAttribute("message", "Новость '" + article.getTitle() + "' успешно обновлена");
+        return "main";
     }
 
 
@@ -100,9 +104,14 @@ public class AppController {
      * This method will delete an article by it's id value.
      */
     @RequestMapping(value = {"/delete-{id}-article"}, method = RequestMethod.GET)
-    public String deleteArticle(@PathVariable Integer id) {
+    public String deleteArticle(@PathVariable Integer id, ModelMap model) {
         service.deleteArticle(id);
-        return "redirect:/main";
+
+        List<Article> articles = service.findAllArticles();
+        model.addAttribute("articles", articles);
+        model.addAttribute("message", "Новость с id = '" + id + "' успешно удалена");
+        model.addAttribute("delete", true);
+        return "main";
     }
 
 }

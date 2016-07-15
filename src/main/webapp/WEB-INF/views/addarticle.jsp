@@ -2,63 +2,115 @@
          pageEncoding="utf-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Add Article - Spring Hibernate Assignment</title>
+
+    <spring:url value="resources/js/jquery-2.2.4.min.js" var="jqueryJs"/>
+    <spring:url value="resources/css/bootstrap.min.css" var="bootstrapcss"/>
+    <spring:url value="resources/js/bootstrap.min.js" var="bootstrapjs"/>
+    <script src="${jqueryJs}"></script>
+    <link href="${bootstrapcss}" rel="stylesheet"/>
+    <script src=${bootstrapjs}></script>
 
     <style>
-
         .error {
             color: #ff0000;
         }
     </style>
 
+    <title>Add Article - Spring Hibernate Assignment</title>
 </head>
 
 <body>
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Навигация</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="<c:url value='/main' />"><span class="glyphicon glyphicon-home"></span></a>
+            </div>
 
-<h2>Add Article Form</h2>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="<c:url value='/main' />">Домой</a></li>
+                    <li class="active"><a href="#">Добавить новость<span class="sr-only">(текущая)</span></a></li>
+                </ul>
+                <form class="navbar-form navbar-right" role="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Название или содержание">
+                    </div>
+                    <button type="submit" class="btn btn-default">Поиск</button>
+                </form>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
 
-<form:form method="POST" modelAttribute="article">
-    <form:input type="hidden" path="id" id="id"/>
-    <table>
-        <tr>
-            <td><label for="title">Title: </label></td>
-            <td><form:input path="title" id="title"/></td>
-            <td><form:errors path="title" cssClass="error"/></td>
-        </tr>
+    <%-- форма добавления --%>
 
-        <tr>
-            <td><label for="content">Content: </label></td>
-            <td><form:input path="content" id="content"/></td>
-            <td><form:errors path="content" cssClass="error"/></td>
-        </tr>
+    <form:form class="form-horizontal" role="form" method="POST" modelAttribute="article">
+        <form:input type="hidden" path="id" id="id"/>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="title">Название:</label>
+            <div class="col-sm-6">
+                <form:input path="title" type="text" class="form-control" id="title"
+                            placeholder="Введите название новости"/>
+            </div>
+            <div class="col-sm-4">
+                <form:errors path="title" cssClass="error"/>
+            </div>
+        </div>
 
-        <tr>
-            <td><label for="category">Category: </label></td>
-            <td><form:input path="category" id="category"/></td>
-            <td><form:errors path="category" cssClass="error"/></td>
-        </tr>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="content">Текст:</label>
+            <div class="col-sm-6">
+                <form:input path="content" type="text" class="form-control" id="content"
+                            placeholder="Введите текст новости"/>
+            </div>
+            <div class="col-sm-4">
+                <form:errors path="content" cssClass="error"/>
+            </div>
+        </div>
 
-        <tr>
-            <td colspan="3">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="category">Категория:</label>
+            <div class="col-sm-6">
+                <form:input path="category" type="text" class="form-control" id="category"
+                            placeholder="Введите категорию новости"/>
+            </div>
+            <div class="col-sm-4">
+                <form:errors path="category" cssClass="error"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
                 <c:choose>
                     <c:when test="${edit}">
-                        <input type="submit" value="Update"/>
+                        <button type="submit" class="btn btn-default" value="Update">Обновить</button>
                     </c:when>
                     <c:otherwise>
-                        <input type="submit" value="Add"/>
+                        <button type="submit" class="btn btn-default" value="Add">Добавить</button>
                     </c:otherwise>
                 </c:choose>
-            </td>
-        </tr>
-    </table>
-</form:form>
-<br/>
-<br/>
-Go back to <a href="<c:url value='/main' />">List of All Articles</a>
+            </div>
+        </div>
+    </form:form>
+
+    <br/>
+    <center>
+        Вернуться на <a href="<c:url value='/main' />">главную страницу</a>
+    </center>
+</div>
 </body>
 </html>

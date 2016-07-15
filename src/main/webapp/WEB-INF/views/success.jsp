@@ -18,7 +18,7 @@
 <body>
 <div class="container">
     <center>
-        <h2>${success}</h2>
+        <h2>${message}</h2>
         <h4>
             Вернуться на <a href="<c:url value='/main' />">главную страницу</a>
         </h4>
