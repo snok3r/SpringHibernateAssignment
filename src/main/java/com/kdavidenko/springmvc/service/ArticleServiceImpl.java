@@ -1,14 +1,13 @@
 package com.kdavidenko.springmvc.service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.kdavidenko.springmvc.model.Article;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,22 +61,35 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<Article> findArticlesByTitleOrContent(String searchPattern) {
+    public List<Article> findArticlesByTitleOrContent(final String searchPattern) {
         if (searchPattern == null || "".equals(searchPattern))
             return findAllArticles();
 
-        Query query = getSession().createSQLQuery(
-                "SELECT * FROM articles WHERE (title LIKE :search or content LIKE :search)")
-                .addEntity(Article.class)
-                .setParameter("search", "%" + searchPattern + "%");
-        return query.list();
+        return findAllArticles()
+                .parallelStream()
+                .filter(article -> titleOrContentContainsPattern(article, searchPattern))
+                .collect(Collectors.toList());
+    }
+
+    private boolean titleOrContentContainsPattern(Article article, String searchPattern) {
+        return titleContainsPattern(article, searchPattern) || contentContainsPattern(article, searchPattern);
+    }
+
+    private boolean titleContainsPattern(Article article, String pattern) {
+        return article.getTitle().toLowerCase().contains(pattern.toLowerCase());
+    }
+
+    private boolean contentContainsPattern(Article article, String pattern) {
+        return article.getContent().toLowerCase().contains(pattern.toLowerCase());
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Article> findAllArticles() {
         Criteria criteria = createEntityCriteria();
-        return (List<Article>) criteria.list();
+        return (List<Article>) criteria
+                .addOrder(Order.desc("id"))
+                .list();
     }
 
     private Criteria createEntityCriteria() {

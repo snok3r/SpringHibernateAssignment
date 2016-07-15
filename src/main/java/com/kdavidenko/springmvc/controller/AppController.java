@@ -6,6 +6,7 @@ import java.util.List;
 import com.kdavidenko.springmvc.model.Article;
 import com.kdavidenko.springmvc.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,11 +21,15 @@ import javax.validation.Valid;
 @RequestMapping("/")
 public class AppController {
 
+    @Qualifier("articleService")
     @Autowired
     ArticleService service;
 
     @Autowired
     MessageSource messageSource;
+
+    private final String mainPage = "main";
+    private final String addArticlePage = "addarticle";
 
     /*
      * This method will list all existing articles.
@@ -34,7 +39,7 @@ public class AppController {
 
         List<Article> articles = service.findAllArticles();
         model.addAttribute("articles", articles);
-        return "main";
+        return mainPage;
     }
 
     /*
@@ -50,7 +55,7 @@ public class AppController {
         model.addAttribute("articles", articles);
         model.addAttribute("message", articles.size() + " результат(ов/а) в категории '" + decodedCategory + "'");
         model.addAttribute("alert_clazz", "info");
-        return "main";
+        return mainPage;
     }
 
     /*
@@ -67,7 +72,7 @@ public class AppController {
         model.addAttribute("articles", articles);
         model.addAttribute("message", articles.size() + " результат(ов/а) по ключевому слову '" + decodedSearchPattern + "'");
         model.addAttribute("alert_clazz", "info");
-        return "main";
+        return mainPage;
     }
 
     private String decodeISOString(String stringToDecode) {
@@ -86,7 +91,7 @@ public class AppController {
         Article article = new Article();
         model.addAttribute("article", article);
         model.addAttribute("edit", false);
-        return "addarticle";
+        return addArticlePage;
     }
 
     /*
@@ -98,7 +103,7 @@ public class AppController {
                               ModelMap model) {
 
         if (result.hasErrors()) {
-            return "addarticle";
+            return addArticlePage;
         }
 
         service.saveArticle(article);
@@ -107,7 +112,7 @@ public class AppController {
         model.addAttribute("articles", articles);
         model.addAttribute("message", "Новость '" + article.getTitle() + "' успешно добавлена");
         model.addAttribute("alert_clazz", "success");
-        return "main";
+        return mainPage;
     }
 
 
@@ -119,7 +124,7 @@ public class AppController {
         Article article = service.findById(id);
         model.addAttribute("article", article);
         model.addAttribute("edit", true);
-        return "addarticle";
+        return addArticlePage;
     }
 
     /*
@@ -131,7 +136,7 @@ public class AppController {
                                 ModelMap model, @PathVariable Integer id) {
 
         if (result.hasErrors()) {
-            return "addarticle";
+            return addArticlePage;
         }
 
         service.updateArticle(article);
@@ -140,7 +145,7 @@ public class AppController {
         model.addAttribute("articles", articles);
         model.addAttribute("message", "Новость '" + article.getTitle() + "' успешно обновлена");
         model.addAttribute("alert_clazz", "success");
-        return "main";
+        return mainPage;
     }
 
 
@@ -155,7 +160,7 @@ public class AppController {
         model.addAttribute("articles", articles);
         model.addAttribute("message", "Новость с id = '" + id + "' успешно удалена");
         model.addAttribute("alert_clazz", "warning");
-        return "main";
+        return mainPage;
     }
 
 }
