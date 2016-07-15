@@ -1,6 +1,7 @@
 package com.kdavidenko.springmvc.service;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.kdavidenko.springmvc.model.Article;
@@ -41,6 +42,8 @@ public class ArticleServiceImpl implements ArticleService {
             entity.setContent(article.getContent());
             entity.setCategory(article.getCategory());
         }
+        
+        getSession().update(entity);
     }
 
     @Override
@@ -54,10 +57,8 @@ public class ArticleServiceImpl implements ArticleService {
         if (category == null || "".equals(category))
             return findAllArticles();
 
-        return findAllArticles()
-                .parallelStream()
-                .filter(a -> a.getCategory().toLowerCase().equals(category.toLowerCase()))
-                .collect(Collectors.toList());
+        return filterArticles(findAllArticles(),
+                articlesWithGivenCategory(category));
     }
 
     @Override
@@ -65,22 +66,8 @@ public class ArticleServiceImpl implements ArticleService {
         if (searchPattern == null || "".equals(searchPattern))
             return findAllArticles();
 
-        return findAllArticles()
-                .parallelStream()
-                .filter(article -> titleOrContentContainsPattern(article, searchPattern))
-                .collect(Collectors.toList());
-    }
-
-    private boolean titleOrContentContainsPattern(Article article, String searchPattern) {
-        return titleContainsPattern(article, searchPattern) || contentContainsPattern(article, searchPattern);
-    }
-
-    private boolean titleContainsPattern(Article article, String pattern) {
-        return article.getTitle().toLowerCase().contains(pattern.toLowerCase());
-    }
-
-    private boolean contentContainsPattern(Article article, String pattern) {
-        return article.getContent().toLowerCase().contains(pattern.toLowerCase());
+        return filterArticles(findAllArticles(),
+                titleContainsPattern(searchPattern).or(contentContainsPattern(searchPattern)));
     }
 
     @SuppressWarnings("unchecked")
@@ -94,5 +81,24 @@ public class ArticleServiceImpl implements ArticleService {
 
     private Criteria createEntityCriteria() {
         return getSession().createCriteria(Article.class);
+    }
+
+    private Predicate<Article> articlesWithGivenCategory(String category) {
+        return article -> article.getCategory().toLowerCase().equals(category.toLowerCase());
+    }
+
+    private Predicate<Article> contentContainsPattern(String pattern) {
+        return article -> article.getContent().toLowerCase().contains(pattern.toLowerCase());
+    }
+
+    private Predicate<Article> titleContainsPattern(String pattern) {
+        return article -> article.getTitle().toLowerCase().contains(pattern.toLowerCase());
+    }
+
+    private List<Article> filterArticles(List<Article> articles, Predicate<Article> predicate) {
+        return articles
+                .parallelStream()
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 }
