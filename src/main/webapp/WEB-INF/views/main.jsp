@@ -96,7 +96,7 @@
         </c:when>
         <c:otherwise>
             <div class="alert alert-info">
-                Не найдено новостей по соответствующему поиску
+                Новостей нет
             </div>
         </c:otherwise>
     </c:choose>

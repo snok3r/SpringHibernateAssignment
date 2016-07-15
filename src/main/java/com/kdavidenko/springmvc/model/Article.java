@@ -11,8 +11,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.LocalDate;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.joda.time.LocalDateTime;
 
 import java.io.Serializable;
 
@@ -36,10 +35,9 @@ public class Article implements Serializable {
     private String content;
 
     @NotNull
-    @DateTimeFormat(pattern = "dd.MM.yyyy")
     @Column(name = "publication_date", nullable = false)
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
-    private LocalDate publicationDate = new LocalDate();
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    private LocalDateTime publicationDate = new LocalDateTime();
 
     @Size(min = 3, max = 45)
     @Column(name = "category", length = 45, nullable = false)
@@ -64,11 +62,11 @@ public class Article implements Serializable {
         this.title = title;
     }
 
-    public LocalDate getPublicationDate() {
+    public LocalDateTime getPublicationDate() {
         return publicationDate;
     }
 
-    public void setPublicationDate(LocalDate publicationDate) {
+    public void setPublicationDate(LocalDateTime publicationDate) {
         this.publicationDate = publicationDate;
     }
 
