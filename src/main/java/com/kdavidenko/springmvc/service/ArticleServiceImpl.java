@@ -1,6 +1,7 @@
 package com.kdavidenko.springmvc.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.kdavidenko.springmvc.model.Article;
 import org.hibernate.Criteria;
@@ -43,6 +44,13 @@ public class ArticleServiceImpl implements ArticleService {
         Query query = getSession().createSQLQuery("DELETE FROM articles WHERE id = :id");
         query.setInteger("id", id);
         query.executeUpdate();
+    }
+
+    public List<Article> findArticlesByCategory(final String category) {
+        return findAllArticles()
+                .stream()
+                .filter(a -> a.getCategory().equals(category))
+                .collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
