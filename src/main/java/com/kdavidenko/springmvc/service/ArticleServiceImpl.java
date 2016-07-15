@@ -46,9 +46,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void deleteArticle(Integer id) {
-        Query query = getSession().createSQLQuery("DELETE FROM articles WHERE id = :id");
-        query.setInteger("id", id);
-        query.executeUpdate();
+        Article articleToDelete = findById(id);
+        getSession().delete(articleToDelete);
     }
 
     @Override
