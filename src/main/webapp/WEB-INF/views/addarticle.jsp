@@ -21,6 +21,15 @@
         }
     </style>
 
+    <script>
+        function search() {
+            var searchLink = document.createElement('a');
+            searchLink.setAttribute('href', "<c:url value='/search/titleandcontent=' />");
+
+            document.location.href = searchLink.getAttribute("href") + $("#searchBox").val();
+        }
+    </script>
+
     <title>Add Article - Spring Hibernate Assignment</title>
 </head>
 
@@ -37,7 +46,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="<c:url value='/main' />"><span class="glyphicon glyphicon-home"></span></a>
+                <a class="navbar-brand" href="<c:url value='/main' />"><span
+                        class="glyphicon glyphicon-home"></span></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -46,18 +56,17 @@
                     <li><a href="<c:url value='/main' />">Домой</a></li>
                     <li class="active"><a href="#">Добавить новость<span class="sr-only">(текущая)</span></a></li>
                 </ul>
-                <form class="navbar-form navbar-right" role="search">
+                <form class="navbar-form navbar-right" onsubmit="search();" action="javascript:void(0);">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Название или содержание">
+                        <input type="text" class="form-control" id="searchBox" placeholder="Название или содержание"/>
                     </div>
-                    <button type="submit" class="btn btn-default">Поиск</button>
+                    <input type="button" class="btn btn-default" onclick="search();" value="Поиск" id="searchBtn"/>
                 </form>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
 
     <%-- форма добавления --%>
-
     <form:form class="form-horizontal" role="form" method="POST" modelAttribute="article">
         <form:input type="hidden" path="id" id="id"/>
         <div class="form-group">
@@ -68,17 +77,6 @@
             </div>
             <div class="col-sm-4">
                 <form:errors path="title" cssClass="error"/>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="content">Текст:</label>
-            <div class="col-sm-6">
-                <form:input path="content" type="text" class="form-control" id="content"
-                            placeholder="Введите текст новости"/>
-            </div>
-            <div class="col-sm-4">
-                <form:errors path="content" cssClass="error"/>
             </div>
         </div>
 
@@ -94,6 +92,17 @@
         </div>
 
         <div class="form-group">
+            <label class="control-label col-sm-2" for="content">Текст:</label>
+            <div class="col-sm-6">
+                <form:textarea path="content" rows="10" class="form-control" id="content"
+                               placeholder="Введите текст новости"/>
+            </div>
+            <div class="col-sm-4">
+                <form:errors path="content" cssClass="error"/>
+            </div>
+        </div>
+
+        <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <c:choose>
                     <c:when test="${edit}">
@@ -103,14 +112,12 @@
                         <button type="submit" class="btn btn-default" value="Add">Добавить</button>
                     </c:otherwise>
                 </c:choose>
+                <a href="<c:url value='/main' />" class="btn btn-default">
+                    Отмена
+                </a>
             </div>
         </div>
     </form:form>
-
-    <br/>
-    <center>
-        Вернуться на <a href="<c:url value='/main' />">главную страницу</a>
-    </center>
 </div>
 </body>
 </html>

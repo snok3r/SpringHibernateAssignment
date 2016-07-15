@@ -1,5 +1,6 @@
 package com.kdavidenko.springmvc.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import com.kdavidenko.springmvc.model.Article;
@@ -37,16 +38,44 @@ public class AppController {
     }
 
     /*
- * This method will list all existing articles.
- */
+    This method will list articles those matching <tt>category</tt>.
+     */
     @RequestMapping(value = {"/search/category={category}"}, method = RequestMethod.GET)
     public String getArticlesByCategory(@PathVariable String category,
                                         ModelMap model) {
 
-        List<Article> articles = service.findArticlesByCategory(category);
+        String decodedCategory = decodeISOString(category);
+        List<Article> articles = service.findArticlesByCategory(decodedCategory);
 
         model.addAttribute("articles", articles);
+        model.addAttribute("message", articles.size() + " результат(ов/а) в категории '" + decodedCategory + "'");
+        model.addAttribute("alert_clazz", "info");
         return "main";
+    }
+
+    /*
+    This method will list articles those matching <tt>searchPattern</tt> in
+    title or content.
+    */
+    @RequestMapping(value = {"/search/titleandcontent={searchPattern}"}, method = RequestMethod.GET)
+    public String getArticlesByTitleOrContent(@PathVariable String searchPattern,
+                                              ModelMap model) {
+
+        String decodedSearchPattern = decodeISOString(searchPattern);
+        List<Article> articles = service.findArticlesByTitleOrContent(decodedSearchPattern);
+
+        model.addAttribute("articles", articles);
+        model.addAttribute("message", articles.size() + " результат(ов/а) по ключевому слову '" + decodedSearchPattern + "'");
+        model.addAttribute("alert_clazz", "info");
+        return "main";
+    }
+
+    private String decodeISOString(String stringToDecode) {
+        try {
+            return new String(stringToDecode.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
     }
 
     /*
@@ -77,6 +106,7 @@ public class AppController {
         List<Article> articles = service.findAllArticles();
         model.addAttribute("articles", articles);
         model.addAttribute("message", "Новость '" + article.getTitle() + "' успешно добавлена");
+        model.addAttribute("alert_clazz", "success");
         return "main";
     }
 
@@ -109,6 +139,7 @@ public class AppController {
         List<Article> articles = service.findAllArticles();
         model.addAttribute("articles", articles);
         model.addAttribute("message", "Новость '" + article.getTitle() + "' успешно обновлена");
+        model.addAttribute("alert_clazz", "success");
         return "main";
     }
 
@@ -123,7 +154,7 @@ public class AppController {
         List<Article> articles = service.findAllArticles();
         model.addAttribute("articles", articles);
         model.addAttribute("message", "Новость с id = '" + id + "' успешно удалена");
-        model.addAttribute("delete", true);
+        model.addAttribute("alert_clazz", "warning");
         return "main";
     }
 

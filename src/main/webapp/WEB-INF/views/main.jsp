@@ -13,6 +13,15 @@
     <link href="${bootstrapcss}" rel="stylesheet"/>
     <script src=${bootstrapjs}></script>
 
+    <script>
+        function search() {
+            var searchLink = document.createElement('a');
+            searchLink.setAttribute('href', "<c:url value='/search/titleandcontent=' />");
+
+            document.location.href = searchLink.getAttribute("href") + $("#searchBox").val();
+        }
+    </script>
+
     <title>Main - Spring Hibernate Assignment</title>
 </head>
 
@@ -41,26 +50,18 @@
                     </li>
                     <li><a href="<c:url value='/add' />">Добавить новость</a></li>
                 </ul>
-                <form class="navbar-form navbar-right" role="search">
+                <form class="navbar-form navbar-right" onsubmit="search();" action="javascript:void(0);">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Название или содержание">
+                        <input type="text" class="form-control" id="searchBox" placeholder="Название или содержание"/>
                     </div>
-                    <button type="submit" class="btn btn-default">Поиск</button>
+                    <input type="button" class="btn btn-default" onclick="search();" value="Поиск" id="searchBtn"/>
                 </form>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
 
     <c:if test="${not empty message}">
-        <c:choose>
-            <c:when test="${delete}">
-                <c:set var="clazz" scope="session" value="warning"/>
-            </c:when>
-            <c:otherwise>
-                <c:set var="clazz" scope="session" value="success"/>
-            </c:otherwise>
-        </c:choose>
-        <div class="alert alert-${clazz}">
+        <div class="alert alert-${alert_clazz}">
                 ${message}
         </div>
     </c:if>

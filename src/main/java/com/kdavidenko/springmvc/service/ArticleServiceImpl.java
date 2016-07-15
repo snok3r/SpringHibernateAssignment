@@ -56,22 +56,22 @@ public class ArticleServiceImpl implements ArticleService {
         if (category == null || "".equals(category))
             return findAllArticles();
 
-        String decodedCategory = "";
-        try {
-            decodedCategory = new String(category.getBytes("ISO-8859-1"), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-        }
-
-        String finalDecodedCategory = decodedCategory;
         return findAllArticles()
                 .parallelStream()
-                .filter(a -> a.getCategory().toLowerCase().equals(finalDecodedCategory.toLowerCase()))
+                .filter(a -> a.getCategory().toLowerCase().equals(category.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Article> findArticlesByTitleOrContent(String search) {
-        return null;
+    public List<Article> findArticlesByTitleOrContent(String searchPattern) {
+        if (searchPattern == null || "".equals(searchPattern))
+            return findAllArticles();
+
+        Query query = getSession().createSQLQuery(
+                "SELECT * FROM articles WHERE (title LIKE :search or content LIKE :search)")
+                .addEntity(Article.class)
+                .setParameter("search", "%" + searchPattern + "%");
+        return query.list();
     }
 
     @SuppressWarnings("unchecked")
