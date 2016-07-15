@@ -6,9 +6,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <spring:url value="resources/js/jquery-2.2.4.min.js" var="jqueryJs"/>
-    <spring:url value="resources/css/bootstrap.min.css" var="bootstrapcss"/>
-    <spring:url value="resources/js/bootstrap.min.js" var="bootstrapjs"/>
+    <spring:url value="/resources/js/jquery-2.2.4.min.js" var="jqueryJs"/>
+    <spring:url value="/resources/css/bootstrap.min.css" var="bootstrapcss"/>
+    <spring:url value="/resources/js/bootstrap.min.js" var="bootstrapjs"/>
     <script src="${jqueryJs}"></script>
     <link href="${bootstrapcss}" rel="stylesheet"/>
     <script src=${bootstrapjs}></script>
@@ -88,7 +88,7 @@
                     </div>
                     <div class="panel-footer">
                             ${article.publicationDate},
-                        <a href="#">${article.category}</a>
+                        <a href="<c:url value='/search/category=${article.category}' />">${article.category}</a>
                     </div>
                 </div>
             </c:forEach>

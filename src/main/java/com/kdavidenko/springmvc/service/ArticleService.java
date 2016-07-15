@@ -14,5 +14,9 @@ public interface ArticleService {
 
     void deleteArticle(Integer id);
 
+    List<Article> findArticlesByCategory(String category);
+
+    List<Article> findArticlesByTitleOrContent(String search);
+
     List<Article> findAllArticles();
 }

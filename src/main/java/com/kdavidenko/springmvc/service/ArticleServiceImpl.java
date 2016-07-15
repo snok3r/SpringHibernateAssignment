@@ -1,5 +1,6 @@
 package com.kdavidenko.springmvc.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,14 +24,17 @@ public class ArticleServiceImpl implements ArticleService {
         return sessionFactory.getCurrentSession();
     }
 
+    @Override
     public Article findById(Integer id) {
         return (Article) getSession().get(Article.class, id);
     }
 
+    @Override
     public void saveArticle(Article article) {
         getSession().save(article);
     }
 
+    @Override
     public void updateArticle(Article article) {
         Article entity = findById(article.getId());
         if (entity != null) {
@@ -40,20 +44,38 @@ public class ArticleServiceImpl implements ArticleService {
         }
     }
 
+    @Override
     public void deleteArticle(Integer id) {
         Query query = getSession().createSQLQuery("DELETE FROM articles WHERE id = :id");
         query.setInteger("id", id);
         query.executeUpdate();
     }
 
+    @Override
     public List<Article> findArticlesByCategory(final String category) {
+        if (category == null || "".equals(category))
+            return findAllArticles();
+
+        String decodedCategory = "";
+        try {
+            decodedCategory = new String(category.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+        }
+
+        String finalDecodedCategory = decodedCategory;
         return findAllArticles()
-                .stream()
-                .filter(a -> a.getCategory().equals(category))
+                .parallelStream()
+                .filter(a -> a.getCategory().toLowerCase().equals(finalDecodedCategory.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Article> findArticlesByTitleOrContent(String search) {
+        return null;
+    }
+
     @SuppressWarnings("unchecked")
+    @Override
     public List<Article> findAllArticles() {
         Criteria criteria = createEntityCriteria();
         return (List<Article>) criteria.list();

@@ -1,7 +1,6 @@
 package com.kdavidenko.springmvc.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.kdavidenko.springmvc.model.Article;
 import com.kdavidenko.springmvc.service.ArticleService;
@@ -33,6 +32,19 @@ public class AppController {
     public String getAllArticles(ModelMap model) {
 
         List<Article> articles = service.findAllArticles();
+        model.addAttribute("articles", articles);
+        return "main";
+    }
+
+    /*
+ * This method will list all existing articles.
+ */
+    @RequestMapping(value = {"/search/category={category}"}, method = RequestMethod.GET)
+    public String getArticlesByCategory(@PathVariable String category,
+                                        ModelMap model) {
+
+        List<Article> articles = service.findArticlesByCategory(category);
+
         model.addAttribute("articles", articles);
         return "main";
     }
