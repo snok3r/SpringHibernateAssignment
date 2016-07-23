@@ -11,8 +11,10 @@
     <spring:url value="resources/js/jquery-2.2.4.min.js" var="jqueryJs"/>
     <spring:url value="resources/css/bootstrap.min.css" var="bootstrapcss"/>
     <spring:url value="resources/js/bootstrap.min.js" var="bootstrapjs"/>
-    <script src="${jqueryJs}"></script>
+    <spring:url value="/search/titleandcontent=" var="search_link"/>
+
     <link href="${bootstrapcss}" rel="stylesheet"/>
+    <script src="${jqueryJs}"></script>
     <script src=${bootstrapjs}></script>
 
     <style>
@@ -23,10 +25,7 @@
 
     <script>
         function search() {
-            var searchLink = document.createElement('a');
-            searchLink.setAttribute('href', "<c:url value='/search/titleandcontent=' />");
-
-            document.location.href = searchLink.getAttribute("href") + $("#searchBox").val();
+            document.location.href = "${search_link}" + $("#searchBox").val();
         }
     </script>
 
